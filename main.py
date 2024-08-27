@@ -106,7 +106,13 @@ app.include_router(blog_post.router)
 
 @app.get("/")
 def home():
-    return {"Hello": "World"} 
+    return {"Hello": "World",
+            "Message": "Welcome to the FastAPI CRUD Application",
+            "Developed By": "Dummy Developer",
+            "docs": "https://fastapi-crud-2upi.onrender.com/docs"
+            } 
+
+
 
 # models.Base.metadata.create_all(engine)
 models.Base.metadata.create_all(bind=engine)
