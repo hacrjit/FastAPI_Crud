@@ -93,14 +93,17 @@
 
 
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from db import models
-from routers import blog_get, blog_post,user,article
+from exceptions import StoryException
+from routers import blog_get, blog_post,user,article,product
 from db.database import engine
 
 app = FastAPI()
 app.include_router(user.router)
 app.include_router(article.router)
+app.include_router(product.router)
 app.include_router(blog_get.router)
 app.include_router(blog_post.router)
 
@@ -112,7 +115,19 @@ def home():
             "docs": "https://fastapi-crud-2upi.onrender.com/docs"
             } 
 
+@app.exception_handler(StoryException)
+def story_exception_handler(request: Request, exc: StoryException):
+    return JSONResponse(
+        status_code=418,
+        content={"message": f"Error: {exc.name}"}
+    )
 
+# @app.exception_handler(HTTPException)
+# def http_exception_handler(request: Request, exc: HTTPException):
+#     return JSONResponse(
+#         status_code=exc.status_code,
+#         content={"message": f"Error: {exc.detail}"}
+#     )
 
 # models.Base.metadata.create_all(engine)
 models.Base.metadata.create_all(bind=engine)
